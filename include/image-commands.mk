@@ -340,6 +340,18 @@ define Build/tplink-v2-header
 	@mv $@.new $@
 endef
 
+define Build/tplink-archer-d7-image
+	$(STAGING_DIR_HOST)/bin/mktplinkfw2 \
+		-H $(TPLINK_HWID) -W $(TPLINK_HWREV) \
+		-L $(KERNEL_LOADADDR) \
+		-E $(if $(KERNEL_ENTRY),$(KERNEL_ENTRY),$(KERNEL_LOADADDR))  \
+		-w $(TPLINK_HWREVADD) -F "$(TPLINK_FLASHLAYOUT)" \
+		-T $(TPLINK_HVERSION) -V "ver. 2.0" -a 0x1000 -j \
+		-k $(IMAGE_KERNEL) -r $(IMAGE_ROOTFS) -o $@.new $(1)
+	cat $@.new >> $@
+	rm -rf $@.new
+endef
+
 define Build/tplink-v2-image
 	$(STAGING_DIR_HOST)/bin/mktplinkfw2 \
 		-H $(TPLINK_HWID) -W $(TPLINK_HWREV) \
